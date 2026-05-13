@@ -2,11 +2,8 @@
 pragma solidity ^0.8.20;
 
 interface IFactory {
-    event PairCreated(address indexed token0, address indexed token1, address pair, uint256 allPairsLength);
-
-    function getPair(address tokenA, address tokenB) external view returns (address pair);
-    function allPairs(uint256 index) external view returns (address pair);
-    function allPairsLength() external view returns (uint256);
-
-    function createPair(address tokenA, address tokenB) external returns (address pair);
+    function createPairCREATE(address token0, address token1) external returns (address);
+    function createPairCREATE2(address token0, address token1) external returns (address);
+    function getPair(address token0, address token1) external view returns (address);
+    function predictAddress(address token0, address token1) external view returns (address);
 }

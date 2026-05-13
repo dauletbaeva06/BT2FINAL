@@ -1,6 +1,7 @@
 # Compiler files
 cache/
 out/
+test/
 
 # Commonly ignored directories
 .logs/
@@ -18,3 +19,4 @@ docs/
 .env
 .env.*
 !.env.example
+test/AMM.t.sol
