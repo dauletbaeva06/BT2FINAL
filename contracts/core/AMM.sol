@@ -4,12 +4,13 @@ pragma solidity ^0.8.20;
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IAMM} from "../interfaces/IAMM.sol";
 import {Math} from "../libraries/Math.sol";
 import {Constants} from "../libraries/Constants.sol";
 
-contract AMM is ERC20, ReentrancyGuard, IAMM {
+contract AMM is ERC20, ReentrancyGuard, IAMM, Ownable {
     using SafeERC20 for IERC20;
 
     IERC20 public token0;
@@ -61,13 +62,12 @@ contract AMM is ERC20, ReentrancyGuard, IAMM {
     error PoolNotInitialized();
     error InvalidSlippage();
 
-
     constructor(
         address _token0,
         address _token1,
         string memory _name,
         string memory _symbol
-    ) ERC20(_name, _symbol) {
+    ) ERC20(_name, _symbol) Ownable(msg.sender) {
         if (_token0 == address(0) || _token1 == address(0)) {
             revert InvalidTokenAddress();
         }
@@ -96,7 +96,6 @@ contract AMM is ERC20, ReentrancyGuard, IAMM {
 
         if (totalSupply == 0) {
             lpTokensMinted = Math.sqrt(_amount0 * _amount1);
-
             if (lpTokensMinted < Constants.MINIMUM_LIQUIDITY) {
                 revert InsufficientLiquidity();
             }
@@ -179,6 +178,9 @@ contract AMM is ERC20, ReentrancyGuard, IAMM {
         if (amountOut < _minAmountOut) {
             revert InvalidSlippage();
         }
+        if (amountOut > reserve1) {
+            revert InsufficientLiquidity();
+        }
 
         reserve0 += _amountIn;
         reserve1 -= amountOut;
@@ -213,6 +215,9 @@ contract AMM is ERC20, ReentrancyGuard, IAMM {
         if (amountOut < _minAmountOut) {
             revert InvalidSlippage();
         }
+        if (amountOut > reserve0) {
+            revert InsufficientLiquidity();
+        }
 
         reserve1 += _amountIn;
         reserve0 -= amountOut;
@@ -224,7 +229,7 @@ contract AMM is ERC20, ReentrancyGuard, IAMM {
         emit Swap(msg.sender, address(token1), address(token0), _amountIn, amountOut, fee, block.timestamp);
     }
 
-    function withdrawFees(address _recipient) external returns (uint256 amount0, uint256 amount1) {
+    function withdrawFees(address _recipient) external onlyOwner returns (uint256 amount0, uint256 amount1) {
         if (_recipient == address(0)) {
             revert InvalidTokenAddress();
         }

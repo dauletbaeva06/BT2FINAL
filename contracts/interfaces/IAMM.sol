@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.33;
 
 interface IAMM {
     function swapToken0ForToken1(uint256 amountIn, uint256 minAmountOut) external returns (uint256 amountOut);

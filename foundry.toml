@@ -8,9 +8,9 @@ fs_permissions = [{ access = "read-write", path = "./" }]
 
 remappings = [
     "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+    "@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
     "forge-std/=lib/forge-std/src/"
 ]
-
 [profile.default.invariant]
 runs = 256
 depth = 15
