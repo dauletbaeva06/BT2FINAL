@@ -1,0 +1,19 @@
+type Swap @entity(immutable: true) {
+  id: ID!
+  trader: Bytes!
+  tokenIn: Bytes!
+  tokenOut: Bytes!
+  amountIn: BigInt!
+  amountOut: BigInt!
+  fee: BigInt!
+  timestamp: BigInt!
+}
+
+type LiquidityAdded @entity(immutable: true) {
+  id: ID!
+  provider: Bytes!
+  amount0: BigInt!
+  amount1: BigInt!
+  lpTokensMinted: BigInt!
+  timestamp: BigInt!
+}
