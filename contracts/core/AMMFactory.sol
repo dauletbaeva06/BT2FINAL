@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.33;
 
 import {AMM} from "./AMM.sol";
 import {IFactory} from "../interfaces/IFactory.sol";
@@ -13,7 +13,7 @@ contract AMMFactory is IFactory {
         address indexed token0,
         address indexed token1,
         address indexed pair,
-        uint256 pairCount,
+        uint256 pairCount
     );
 
     event PairCreatedCREATE2(
@@ -40,13 +40,13 @@ contract AMMFactory is IFactory {
         }
 
         if (getPair[_token0][_token1] != address(0)) {
-            revert PairAlreadyExists();
+            revert PairExists();
         }
 
         pair = address(new AMM(_token0, _token1, "AMM-LP", "ALP"));
 
         getPair[_token0][_token1] = pair;
-        allPairs.push(AMM(pair));
+        allPairs.push(pair);
 
         emit PairCreatedCREATE(_token0, _token1, pair, allPairs.length);
     }
@@ -64,7 +64,7 @@ contract AMMFactory is IFactory {
         }
 
         if (getPair[_token0][_token1] != address(0)) {
-            revert PairAlreadyExists();
+            revert PairExists();
         }
 
         salt++;
@@ -108,8 +108,5 @@ contract AMMFactory is IFactory {
     function allPairsLength() external view returns (uint256) {
         return allPairs.length;
     }
-
-    function allPairs() external view returns (address[] memory) {
-        return allPairs;
-    }
 }
+
