@@ -1,0 +1,13 @@
+{
+  "network": "anvil-hardhat",
+  "chainId": 31337,
+  "contracts": {
+    "GovernanceToken": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    "AMMFactory": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+  },
+  "gasUsed": {
+    "GovernanceToken": 1968489,
+    "AMMFactory": 1885036,
+    "total": 3853525
+  }
+}
