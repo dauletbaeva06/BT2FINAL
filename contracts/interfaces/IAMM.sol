@@ -10,4 +10,5 @@ interface IAMM {
     function getK() external view returns (uint256);
     function getPrice() external view returns (uint256);
     function getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) external pure returns (uint256);
+    function withdrawFees(address _recipient) external returns (uint256 amount0, uint256 amount1);
 }
