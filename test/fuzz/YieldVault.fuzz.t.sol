@@ -35,6 +35,9 @@ contract YieldVaultFuzzTest is Test {
         ERC1967Proxy proxy = new ERC1967Proxy(address(implementation), initData);
         vault = YieldVault(address(proxy));
         
+        // Transfer ownership to test contract for minting
+        asset.transferOwnership(address(this));
+        
         vm.stopPrank();
     }
 

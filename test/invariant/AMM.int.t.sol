@@ -22,10 +22,16 @@ contract AMMInvariant is Test {
             (token0, token1) = (token1, token0);
         }
 
-        amm = new AMMV2(); 
-        try amm.initialize(address(token0), address(token1), "LP", "LPT"){
-            } catch {
-        }
+        AMMV2 implementation = new AMMV2();
+        bytes memory data = abi.encodeWithSelector(
+            AMMV2.initialize.selector,
+            address(token0),
+            address(token1),
+            "LP Token",
+            "LPT"
+        );
+        ERC1967Proxy proxy = new ERC1967Proxy(address(implementation), data);
+        amm = AMMV2(address(proxy));
 
         token0.mint(address(this), 5000e18);
         token1.mint(address(this), 5000e18);

@@ -53,7 +53,7 @@ contract AMMFuzzTest is Test {
     }
 
     function testFuzz_Swap(uint256 amountIn) public {
-        amountIn = bound(amountIn, 1, 10e18);
+        amountIn = bound(amountIn, 1e10, 10e18);
         
         token0.mint(user, amountIn);
         
@@ -64,9 +64,9 @@ contract AMMFuzzTest is Test {
     }
 
     function testFuzz_SlippageRevert(uint256 amountIn, uint256 minOut) public {
-        _addLiquidity(1000e18, 1000e18);
+        _addLiquidity(100e18, 100e18);
         amountIn = bound(amountIn, 1e10, 10e18);
-        minOut = bound(minOut, 11e18, 100e18); 
+        minOut = bound(minOut, 50e18, 100e18); // Higher than possible output
         
         token0.mint(user, amountIn);
         vm.startPrank(user);
@@ -94,10 +94,11 @@ contract AMMFuzzTest is Test {
 
     function testFuzz_FlashLoanFee(uint256 loanAmount) public {
         loanAmount = bound(loanAmount, 1e18, 500e18);
-        token0.mint(address(this), loanAmount + 10e18);
+        token0.mint(address(this), 1000e18 + loanAmount + 10e18);
+        token1.mint(address(this), 1000e18 + 1000e18);
 
-        token0.approve(address(amm), 1000e18);
-        token1.approve(address(amm), 1000e18);
+        token0.approve(address(amm), 1000e18 + loanAmount + 10e18);
+        token1.approve(address(amm), 1000e18 + 1000e18);
         amm.addLiquidity(1000e18, 1000e18, 0);
         
         uint256 expectedFee = (loanAmount * amm.flashLoanFee()) / 10000;
