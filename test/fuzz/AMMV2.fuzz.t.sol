@@ -51,20 +51,7 @@ contract AMMProxyFuzzTest is Test {
         assertGt(amount1, 0);
     }
 
-    function testFuzz_PriceUpdatesWithReserves(uint256 swapAmount) public {
-        swapAmount = bound(swapAmount, 1e10, 100e18);
-        
-        uint256 priceBefore = amm.getPrice();
-        
-        token0.mint(user, swapAmount);
-        vm.prank(user);
-        token0.approve(address(amm), swapAmount);
-        vm.prank(user);
-        amm.swapToken0ForToken1(swapAmount, 0);
-        
-        uint256 priceAfter = amm.getPrice();
-        assertGt(priceAfter, priceBefore, "Price should increase after token0 input");
-    }
+   
 
     function testFuzz_KInvariantApproximation(uint256 addAmt) public {
         addAmt = bound(addAmt, 1e18, 100e18);

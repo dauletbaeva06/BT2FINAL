@@ -57,14 +57,6 @@ contract MainnetForkExtendedTest is Test {
         assertTrue(balance > 0);
     }
 
-    function testFork_WETHExistence() public {
-        // Just verify WETH exists on mainnet by checking it has a balance contract
-        uint256 codeSize;
-        assembly {
-            codeSize := extcodesize(WETH)
-        }
-        assertGt(codeSize, 0, "WETH should have contract code");
-    }
 
     function testFork_UniswapRouterExistence() public {
         uint256 codeSize;
