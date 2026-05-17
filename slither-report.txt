@@ -1,0 +1,60 @@
+Reentrancy in AMMV2.flashLoan(address,uint256,uint256,bytes) (contracts/core/AMMV2.sol#300-351):
+        External call allowing reentrancy:
+        - IFlashLoanReceiver(receiver).executeOperation(address(token0),address(token1),amount0,amount1,fee0,fee1,data) (contracts/core/AMMV2.sol#325-332)
+        Balance read before the call:
+        - balanceBefore0 = token0.balanceOf(address(this)) (contracts/core/AMMV2.sol#318-319)
+        Possible stale balance used after the call in a condition:
+        - balanceAfter0 < balanceBefore0 + fee0 (contracts/core/AMMV2.sol#338-339)
+                - stale variable `balanceBefore0`
+Reentrancy in AMMV2.flashLoan(address,uint256,uint256,bytes) (contracts/core/AMMV2.sol#300-351):
+        External call allowing reentrancy:
+        - IFlashLoanReceiver(receiver).executeOperation(address(token0),address(token1),amount0,amount1,fee0,fee1,data) (contracts/core/AMMV2.sol#325-332)
+        Balance read before the call:
+        - balanceBefore1 = token1.balanceOf(address(this)) (contracts/core/AMMV2.sol#319-320)
+        Possible stale balance used after the call in a condition:
+        - balanceAfter1 < balanceBefore1 + fee1 (contracts/core/AMMV2.sol#340-342)
+                - stale variable `balanceBefore1`
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities
+INFO:Detectors:
+Detector: unchecked-transfer
+LendingPool.depositAndBorrow(address,uint256,address,uint256) (contracts/core/lending/LendingPool.sol#44-66) ignores return value by IERC20(collateralToken).transferFrom(msg.sender,address(this),collateralAmount) (contracts/core/lending/LendingPool.sol#51)
+LendingPool.depositAndBorrow(address,uint256,address,uint256) (contracts/core/lending/LendingPool.sol#44-66) ignores return value by IERC20(borrowToken).transfer(msg.sender,borrowAmount) (contracts/core/lending/LendingPool.sol#64)
+LendingPool.liquidate(address,address,address) (contracts/core/lending/LendingPool.sol#75-85) ignores return value by IERC20(collateralToken).transfer(msg.sender,collateralToSeize) (contracts/core/lending/LendingPool.sol#81)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unchecked-transfer
+INFO:Detectors:
+Detector: reentrancy-no-eth
+Reentrancy in AMMV2.flashLoan(address,uint256,uint256,bytes) (contracts/core/AMMV2.sol#300-351):
+        External calls:
+        - IFlashLoanReceiver(receiver).executeOperation(address(token0),address(token1),amount0,amount1,fee0,fee1,data) (contracts/core/AMMV2.sol#325-332)
+        State variables written after the call(s):
+        - reserve0 += amount0 (contracts/core/AMMV2.sol#344-345)
+        AMMV2.reserve0 (contracts/core/AMMV2.sol#19-20) can be used in cross function reentrancies:
+        - AMMV2.flashLoan(address,uint256,uint256,bytes) (contracts/core/AMMV2.sol#300-351)
+        - AMMV2.getK() (contracts/core/AMMV2.sol#276-277)
+        - AMMV2.getPrice() (contracts/core/AMMV2.sol#267-272)
+        - AMMV2.getReserves() (contracts/core/AMMV2.sol#272-276)
+        - AMMV2.reserve0 (contracts/core/AMMV2.sol#19-20)
+        - reserve1 += amount1 (contracts/core/AMMV2.sol#346-348)
+        AMMV2.reserve1 (contracts/core/AMMV2.sol#20-21) can be used in cross function reentrancies:
+        - AMMV2.flashLoan(address,uint256,uint256,bytes) (contracts/core/AMMV2.sol#300-351)
+        - AMMV2.getK() (contracts/core/AMMV2.sol#276-277)
+        - AMMV2.getPrice() (contracts/core/AMMV2.sol#267-272)
+        - AMMV2.getReserves() (contracts/core/AMMV2.sol#272-276)
+        - AMMV2.reserve1 (contracts/core/AMMV2.sol#20-21)
+Reentrancy in LendingPool.liquidate(address,address,address) (contracts/core/lending/LendingPool.sol#75-85):
+        External calls:
+        - IERC20(collateralToken).transfer(msg.sender,collateralToSeize) (contracts/core/lending/LendingPool.sol#81)
+        State variables written after the call(s):
+        - loans[user][collateralToken].active = false (contracts/core/lending/LendingPool.sol#82)
+        LendingPool.loans (contracts/core/lending/LendingPool.sol#18) can be used in cross function reentrancies:
+        - LendingPool.getHealthFactor(address,address) (contracts/core/lending/LendingPool.sol#68-73)
+        - LendingPool.loans (contracts/core/lending/LendingPool.sol#18)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2
+INFO:Detectors:
+Detector: immutable-states
+AMM.token0 (contracts/core/AMM.sol#14-16) should be immutable 
+AMM.token1 (contracts/core/AMM.sol#16-17) should be immutable 
+ChainlinkPriceFeed.priceFeed (contracts/oracles/ChainlinkPriceFeed.sol#6-7) should be immutable 
+LendingPool.priceFeed (contracts/core/lending/LendingPool.sol#21) should be immutable 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-immutable
+INFO:Slither:contracts/ analyzed (98 contracts with 63 detectors), 11 result(s) found
